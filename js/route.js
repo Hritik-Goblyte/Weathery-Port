@@ -9,7 +9,7 @@ const currentLocation = function () {
   window.navigator.geolocation.getCurrentPosition(
     (res) => {
       const { latitude, longitude } = res.coords;
-      updateWeather(`lat=${latitude}`, `lon=${longitude}`);
+      updateWeather(latitude, longitude);
     },
     (err) => {
       window.location.hash = defaultLocation;
@@ -20,8 +20,18 @@ const currentLocation = function () {
 /**
  * @param {string} query Searched Query
  */
-const searchedLocation = (query) => updateWeather(...query.split("&"));
-//updateWeather("lat=28.6138954", "lon=77.2090057")
+const searchedLocation = (query) => {
+  // Parse the query string to extract lat and lon values
+  const params = new URLSearchParams(query);
+  const lat = params.get('lat');
+  const lon = params.get('lon');
+  
+  if (lat && lon) {
+    updateWeather(lat, lon);
+  } else {
+    error404();
+  }
+};
 
 const routes = new Map([
   ["/current-location", currentLocation],
@@ -30,7 +40,7 @@ const routes = new Map([
 
 const checkHash = function () {
   const requestURL = window.location.hash.slice(1);
-  const [route, query] = requestURL.includes
+  const [route, query] = requestURL.includes("?")
     ? requestURL.split("?")
     : [requestURL];
 

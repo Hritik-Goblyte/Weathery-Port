@@ -64,10 +64,58 @@ export const getTime = function (timeUnix, timezone) {
  * @param {number} mps meter/seconds
  * @returns {number} kilometer/hours
  */
-
 export const mps_to_kmh = (mps) => {
-  const mph = mps * 3600;
-  return mph / 1000;
+  const kmh = mps * 3.6; // Correct conversion: 1 m/s = 3.6 km/h
+  return Math.round(kmh * 10) / 10; // Round to 1 decimal place
+};
+
+/**
+ * Convert meters to kilometers with appropriate unit
+ * @param {number} meters 
+ * @returns {string} formatted distance
+ */
+export const formatVisibility = (meters) => {
+  if (meters >= 1000) {
+    return `${(meters / 1000).toFixed(1)} km`;
+  }
+  return `${meters} m`;
+};
+
+/**
+ * Convert pressure from hPa to different units
+ * @param {number} hpa pressure in hectopascals
+ * @returns {object} pressure in different units
+ */
+export const formatPressure = (hpa) => {
+  return {
+    hpa: Math.round(hpa),
+    inHg: (hpa * 0.02953).toFixed(2),
+    mmHg: Math.round(hpa * 0.75006)
+  };
+};
+
+/**
+ * Get wind direction from degrees
+ * @param {number} degrees wind direction in degrees
+ * @returns {string} wind direction abbreviation
+ */
+export const getWindDirection = (degrees) => {
+  const directions = ['N', 'NNE', 'NE', 'ENE', 'E', 'ESE', 'SE', 'SSE', 'S', 'SSW', 'SW', 'WSW', 'W', 'WNW', 'NW', 'NNW'];
+  const index = Math.round(degrees / 22.5) % 16;
+  return directions[index];
+};
+
+/**
+ * Get UV Index description
+ * @param {number} uvIndex 
+ * @returns {object} UV index info
+ */
+export const getUVIndexInfo = (uvIndex) => {
+  if (uvIndex <= 2) return { level: 'Low', color: '#55e755' };
+  if (uvIndex <= 5) return { level: 'Moderate', color: '#f6f657' };
+  if (uvIndex <= 7) return { level: 'High', color: '#bf9e60' };
+  if (uvIndex <= 10) return { level: 'Very High', color: '#e37ac2' };
+  return { level: 'Extreme', color: '#e66e5e' };
 };
 
 export const aqiText = {
@@ -96,4 +144,46 @@ export const aqiText = {
     message:
       "Health warnings of emergency conditions. The entire population is more likely to be affected.",
   },
+};
+
+/**
+ * Temperature conversion utilities
+ */
+export const temperature = {
+  celsiusToFahrenheit(celsius) {
+    return Math.round((celsius * 9/5) + 32);
+  },
+  
+  fahrenheitToCelsius(fahrenheit) {
+    return Math.round((fahrenheit - 32) * 5/9);
+  },
+  
+  format(temp, unit = 'celsius') {
+    if (unit === 'fahrenheit') {
+      return `${this.celsiusToFahrenheit(temp)}°F`;
+    }
+    return `${Math.round(temp)}°C`;
+  }
+};
+
+/**
+ * Format numbers with appropriate precision
+ */
+export const formatNumber = (num, decimals = 0) => {
+  return Number(num).toFixed(decimals);
+};
+
+/**
+ * Debounce function for search input
+ */
+export const debounce = (func, wait) => {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
 };

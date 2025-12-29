@@ -24,6 +24,7 @@
     <!----------------------------------------- Custom_JS ----------------------------------------->
     <script src="./js/app.js" type="module"></script>
     <script src="./js/route.js" type="module"></script>
+    <script src="./js/ai-chat.js" type="module"></script>
   </head>
 
   <body>
@@ -81,6 +82,39 @@
 
           <!--------------------------------- HOURLY-FORECAST ------------------------------------->
           <section class="section hourly-forecast" aria-label="hourly-forecast" data-hourly-forecast></section>
+
+          <!----------------------------------- AI WEATHER CHAT ---------------------------------->
+          <section class="section ai-chat" aria-label="AI Weather Assistant">
+            <div class="card card-lg ai-chat-card">
+              <h2 class="title-2">🤖 AI Weather Assistant</h2>
+              <p class="body-3">Ask me anything about the current weather conditions!</p>
+              
+              <div class="chat-container" data-chat-container>
+                <div class="chat-messages" data-chat-messages>
+                  <div class="chat-message ai-message">
+                    <div class="message-content">
+                      <span class="message-icon">🤖</span>
+                      <p>Hi! I can help you understand the weather data. Ask me questions like "Should I carry an umbrella?" or "Is it good weather for outdoor activities?"</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="chat-input-container">
+                  <div class="chat-input-wrapper">
+                    <input type="text" class="chat-input" placeholder="Ask about the weather..." data-chat-input maxlength="200">
+                    <button class="chat-send-btn" data-chat-send aria-label="Send message">
+                      <span class="m-icon">send</span>
+                    </button>
+                  </div>
+                  <div class="quick-questions">
+                    <button class="quick-btn" data-quick-question="Should I carry an umbrella today?">🌂 Umbrella needed?</button>
+                    <button class="quick-btn" data-quick-question="Is it good weather for outdoor activities?">🏃 Good for outdoors?</button>
+                    <button class="quick-btn" data-quick-question="What should I wear today?">👕 What to wear?</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
 
           <!------------------------------------- FOOTER ------------------------------------------>
           <footer class="footer">

@@ -3,12 +3,16 @@
 
 import { fetchData, url } from "./api.js";
 import * as module from "./module.js";
+import { initializeAIChat, updateWeatherDataForAI } from "./ai-chat.js";
 
 
 
 
 document.addEventListener("DOMContentLoaded", () => {
   const errorSection = document.querySelector("[data-error-content]");
+
+  // Initialize AI Chat
+  initializeAIChat();
 
   if (window.matchMedia("(hover: none) and (pointer: coarse)").matches) {
     const errorHeading = errorSection.querySelector(".mobile-error");
@@ -81,12 +85,13 @@ searchField.addEventListener("input", function () {
 
   if (searchField.value) {
     searchTimeout = setTimeout(() => {
-      fetchData(url.geo(searchField.value), function (locations) {
+      fetchData(url.geo(searchField.value), function (locations, error) {
         searchField.classList.remove("searching");
 
-        if (!Array.isArray(locations)) {
-          console.warn("Search result is not iterable", locations);
+        if (error || !Array.isArray(locations)) {
+          console.warn("Search result error or not iterable", error || locations);
           searchResult.innerHTML = "<p class='body-3'>No location found.</p>";
+          searchResult.classList.add("active");
           return;
         }
 
@@ -146,9 +151,9 @@ export const updateWeather = function (lat, lon) {
     currentLocationBtn.removeAttribute("disabled");
   }
 
-  fetchData(url.currentWeather(lat, lon), function (currentWeather) {
-    if (!currentWeather || !currentWeather.sys) {
-      console.error("❌ Invalid currentWeather", currentWeather);
+  fetchData(url.currentWeather(lat, lon), function (currentWeather, error) {
+    if (error || !currentWeather || !currentWeather.sys) {
+      console.error("❌ Invalid currentWeather", error || currentWeather);
       error404();
       loading.style.display = "none";
       return;
@@ -187,20 +192,28 @@ export const updateWeather = function (lat, lon) {
       </ul>
     `;
 
-    fetchData(url.reverseGeo(lat, lon), function (locationData) {
-      if (locationData && Array.isArray(locationData)) {
-        const { name, country } = locationData[0];
-        card.querySelector("[data-location]").textContent = `${name}, ${country}`;
+    fetchData(url.reverseGeo(lat, lon), function (locationData, error) {
+      if (error || !locationData || !Array.isArray(locationData)) {
+        card.querySelector("[data-location]").textContent = "Unknown Location";
+        updateWeatherDataForAI(currentWeather, "Unknown Location");
       } else {
-        card.querySelector("[data-location]").textContent = "Unknown";
+        const { name, country } = locationData[0];
+        const locationName = `${name}, ${country}`;
+        card.querySelector("[data-location]").textContent = locationName;
+        
+        // Update AI with weather data and location
+        updateWeatherDataForAI(currentWeather, locationName);
       }
 
       currentWeatherSection.appendChild(card);
     });
 
     // ✅ Highlights: Air Pollution etc.
-    fetchData(url.airPollution(lat, lon), function (airPollution) {
-      if (!airPollution || !airPollution.list) return;
+    fetchData(url.airPollution(lat, lon), function (airPollution, error) {
+      if (error || !airPollution || !airPollution.list) {
+        console.warn("Air pollution data unavailable:", error);
+        return;
+      }
 
       const [
         {
@@ -211,6 +224,18 @@ export const updateWeather = function (lat, lon) {
 
       const card = document.createElement("div");
       card.classList.add("card", "card-lg");
+
+      // Get wind data from current weather
+      const windSpeed = currentWeather.wind?.speed || 0;
+      const windDeg = currentWeather.wind?.deg || 0;
+      const windDirection = module.getWindDirection(windDeg);
+      const windSpeedKmh = module.mps_to_kmh(windSpeed);
+      
+      // Format other weather data
+      const visibilityFormatted = module.formatVisibility(visibility);
+      const pressureData = module.formatPressure(pressure);
+      const sunriseTime = module.getTime(sunriseUnixUTC, timezone);
+      const sunsetTime = module.getTime(sunsetUnixUTC, timezone);
 
       card.innerHTML = `
         <h2 class="title-2" id="highlights-label">Today's Highlights</h2>
@@ -242,38 +267,111 @@ export const updateWeather = function (lat, lon) {
               ${module.aqiText[aqi].level}
             </span>
           </div>
+          
+          <div class="card card-sm highlight-card two">
+            <h3 class="title-3">Sunrise & Sunset</h3>
+            <div class="wrapper">
+              <div class="card-list">
+                <div class="card-item">
+                  <span class="m-icon">wb_sunny</span>
+                  <div>
+                    <p class="label-1">Sunrise</p>
+                    <p class="title-1">${sunriseTime}</p>
+                  </div>
+                </div>
+                <div class="card-item">
+                  <span class="m-icon">nights_stay</span>
+                  <div>
+                    <p class="label-1">Sunset</p>
+                    <p class="title-1">${sunsetTime}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card card-sm highlight-card">
+            <h3 class="title-3">Humidity</h3>
+            <div class="wrapper">
+              <span class="m-icon">humidity_percentage</span>
+              <div class="humidity-info">
+                <p class="title-1">${humidity}<sub>%</sub></p>
+                <p class="label-1">${humidity >= 70 ? 'High' : humidity >= 40 ? 'Comfortable' : 'Low'}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card card-sm highlight-card">
+            <h3 class="title-3">Pressure</h3>
+            <div class="wrapper">
+              <span class="m-icon">airwave</span>
+              <div class="pressure-info">
+                <p class="title-1">${pressureData.hpa}<sub>hPa</sub></p>
+                <p class="label-1">${pressure >= 1020 ? 'High' : pressure >= 1000 ? 'Normal' : 'Low'}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card card-sm highlight-card">
+            <h3 class="title-3">Visibility</h3>
+            <div class="wrapper">
+              <span class="m-icon">remove_red_eye</span>
+              <div class="visibility-info">
+                <p class="title-1">${visibilityFormatted}</p>
+                <p class="label-1">${visibility >= 10000 ? 'Excellent' : visibility >= 5000 ? 'Good' : visibility >= 2000 ? 'Moderate' : visibility >= 1000 ? 'Poor' : 'Very Poor'}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="card card-sm highlight-card">
+            <h3 class="title-3">Feels Like</h3>
+            <div class="wrapper">
+              <span class="m-icon">thermostat</span>
+              <div class="feels-like-info">
+                <p class="title-1">${Math.round(feels_like)}&deg;<sup>c</sup></p>
+                <p class="label-1">${Math.abs(feels_like - temp) <= 2 ? 'Accurate' : feels_like > temp ? 'Warmer' : 'Cooler'}</p>
+              </div>
+            </div>
+          </div>
         </div>
-        
       `;
 
       highlightSection.appendChild(card);
-      document.getElementById("ai-btn").addEventListener("click", async () => {
-        const suggestiontext = document.getElementById("ai-output");
-        suggestiontext.textContent = "⏳ Thinking...";
-        // const weatherInfo = "Overcast and 32.c with 61% humidity";
-        try{
-          const res = await fetch("http://localhost:5001/ask-ai", {
-            method: "POST",
-            headers: {"Content-TYpe": "application/json" },
-            body: JSON.stringify({question: `Give Me Suggestion for ${description}, temperature ${temp}°C, and humidity ${humidity}%.`})
-          });
-          const data = await res.json();
-          console.log("AI Raw Response:", data);
-          if (data.reply) {
-            suggestiontext.textContent =  data.reply;
-          }else{
-            suggestiontext.textContent = "AI Error: No Reply";
+      
+      // Optional AI functionality - only if elements exist
+      const aiBtn = document.getElementById("ai-btn");
+      const aiOutput = document.getElementById("ai-output");
+      
+      if (aiBtn && aiOutput) {
+        aiBtn.addEventListener("click", async () => {
+          aiOutput.textContent = "⏳ Thinking...";
+          try{
+            const res = await fetch("http://localhost:5001/ask-ai", {
+              method: "POST",
+              headers: {"Content-Type": "application/json" },
+              body: JSON.stringify({question: `Give Me Suggestion for ${description}, temperature ${temp}°C, and humidity ${humidity}%.`})
+            });
+            const data = await res.json();
+            console.log("AI Raw Response:", data);
+            if (data.reply) {
+              aiOutput.textContent = data.reply;
+            } else {
+              aiOutput.textContent = "AI Error: No Reply";
+            }
+          } catch(err){
+            aiOutput.textContent = "❌ Failed to fetch suggestion.";
+            console.error(err);
           }
-        } catch(err){
-          suggestiontext.textContent = "❌ Failed to fetch suggestion.";
-          console.error(err);
-        }
-      })
+        });
+      }
     });
 
     // ✅ Forecast (Hourly + 5 Day)
-    fetchData(url.forecast(lat, lon), function (forecast) {
-      if (!forecast || !forecast.list) return;
+    fetchData(url.forecast(lat, lon), function (forecast, error) {
+      if (error || !forecast || !forecast.list) {
+        console.warn("Forecast data unavailable:", error);
+        return;
+      }
 
       const { list: forecastList, city: { timezone } } = forecast;
 
@@ -308,11 +406,13 @@ export const updateWeather = function (lat, lon) {
 
         const windLi = document.createElement("li");
         windLi.classList.add("slider-item");
+        const windDirection = module.getWindDirection(deg);
         windLi.innerHTML = `
           <div class="card card-sm slider-card">
             <p class="body-3">${module.getHours(dtUnix, timezone)}</p>
-            <img src="./public/images/weather_icons/direction.png" style="transform: rotate(${deg - 180}deg)" width="48" height="48" alt="wind direction" />
+            <img src="./public/images/weather_icons/direction.png" style="transform: rotate(${deg - 180}deg)" width="48" height="48" alt="wind direction ${windDirection}" />
             <p class="body-3">${parseInt(module.mps_to_kmh(speed))} km/h</p>
+            <p class="label-2">${windDirection}</p>
           </div>
         `;
 
