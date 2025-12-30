@@ -383,6 +383,16 @@ body {
 
 /*-------------------------------------------- HEADER -------------------------------------*/
 
+.header {
+  background: var(--surface);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--outline);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  padding-block: 12px;
+}
+
 .header .btn-primary .span {
   display: none;
 }
@@ -998,9 +1008,12 @@ article.container::before {
   }
 
   .header {
+    background: rgba(29, 28, 31, 0.95);
+    backdrop-filter: blur(10px);
     position: relative;
     height: 120px;
     z-index: 4;
+    border-bottom: 1px solid var(--outline);
   }
 
   .header .container {
@@ -1530,8 +1543,49 @@ article.container::before {
   }
 
   /* Header responsive */
+  .header {
+    background: rgba(29, 28, 31, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding-block: 8px;
+    border-bottom: 1px solid rgba(62, 61, 64, 0.5);
+  }
+
   .header .container {
     padding-inline: 12px;
+  }
+
+  .logo img {
+    width: 200px;
+    height: auto;
+  }
+
+  .header-actions {
+    gap: 8px;
+  }
+
+  .header .btn-primary {
+    padding: 8px 10px;
+    font-size: 1.2rem;
+    border-radius: var(--radius-pill);
+  }
+
+  .header .btn-primary .span {
+    display: none;
+  }
+
+  .header .btn-primary .m-icon {
+    font-size: 1.8rem;
+  }
+
+  .header .icon-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-circle);
+  }
+
+  .header .icon-btn .m-icon {
+    font-size: 1.8rem;
   }
 
   .logo img {
@@ -1542,11 +1596,15 @@ article.container::before {
   /* Search view adjustments */
   .search-view {
     padding: 16px 12px;
+    background: rgba(29, 28, 31, 0.95);
+    backdrop-filter: blur(20px);
   }
 
   .search-field {
     font-size: 1.4rem;
     padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(62, 61, 64, 0.5);
   }
 
   /* Main container */
@@ -1652,9 +1710,29 @@ article.container::before {
     gap: 20px;
   }
 
+  /* Header for tablet */
+  .header {
+    background: rgba(29, 28, 31, 0.9);
+    backdrop-filter: blur(15px);
+    padding-block: 10px;
+  }
+
+  .header .container {
+    padding-inline: 20px;
+  }
+
   /* Header */
   .logo img {
     width: 280px;
+  }
+
+  .header-actions {
+    gap: 12px;
+  }
+
+  .header .btn-primary .span {
+    display: inline;
+    font-size: 1.3rem;
   }
 
   /* Current weather */
@@ -2105,5 +2183,97 @@ article.container::before {
   .highlight-card,
   .ai-chat-card {
     border: 2px solid var(--outline);
+  }
+}
+/* Additional Mobile Header Optimizations */
+@media (max-width: 480px) {
+  .header {
+    background: rgba(19, 18, 20, 0.8);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    padding-block: 6px;
+    border-bottom: 1px solid rgba(62, 61, 64, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .header .container {
+    padding-inline: 8px;
+  }
+
+  .logo img {
+    width: 180px;
+    height: auto;
+  }
+
+  .header-actions {
+    gap: 6px;
+  }
+
+  .header .btn-primary {
+    padding: 6px 8px;
+    min-width: 40px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .header .icon-btn {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .header .icon-btn .m-icon,
+  .header .btn-primary .m-icon {
+    font-size: 1.6rem;
+  }
+
+  /* Make search overlay more transparent on mobile */
+  .search-view {
+    background: rgba(19, 18, 20, 0.9);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+  }
+
+  .search-wrapper {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-pill);
+    padding: 4px;
+  }
+
+  .search-field {
+    background: transparent;
+    border: none;
+    padding: 10px 14px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+  .header {
+    padding-block: 4px;
+  }
+
+  .header .container {
+    padding-inline: 6px;
+  }
+
+  .logo img {
+    width: 160px;
+  }
+
+  .header .btn-primary,
+  .header .icon-btn {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+  }
+
+  .header .icon-btn .m-icon,
+  .header .btn-primary .m-icon {
+    font-size: 1.4rem;
   }
 }
