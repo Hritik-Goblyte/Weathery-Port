@@ -4,16 +4,30 @@ const OW_KEY  = process.env.OPENWEATHER_API_KEY;
 const OW_BASE = "https://api.openweathermap.org";
 
 exports.handler = async (event) => {
-  // Extract endpoint from path: /api/weather/forecast -> forecast
-  const parts    = event.path.replace(/^\/api\/weather\/?/, "").split("/");
-  const endpoint = parts[0] || "";
+  // Path is either:
+  //   /.netlify/functions/weather/forecast   (Netlify direct)
+  //   /api/weather/forecast                  (redirect via netlify.toml)
+  const path = event.path || "";
+  const endpoint = path
+    .replace(/.*\/weather\//, "")   // strip everything up to and including /weather/
+    .split("?")[0]                  // remove query string if any
+    .split("/")[0]                  // first segment only
+    .trim();
 
   const allowed = ["weather", "forecast", "air_pollution"];
   if (!allowed.includes(endpoint)) {
-    return { statusCode: 400, body: JSON.stringify({ error: "Invalid endpoint" }) };
+    console.error("Invalid endpoint:", endpoint, "path:", path);
+    return {
+      statusCode: 400,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: `Invalid endpoint: "${endpoint}"` }),
+    };
   }
 
-  const params = new URLSearchParams({ ...(event.queryStringParameters || {}), appid: OW_KEY });
+  const params = new URLSearchParams({
+    ...(event.queryStringParameters || {}),
+    appid: OW_KEY,
+  });
   const apiUrl = `${OW_BASE}/data/2.5/${endpoint}?${params}`;
 
   try {
