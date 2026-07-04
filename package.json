@@ -9,6 +9,8 @@
   "description": "<p align=\"center\"><img align=\"center\" width=\"280\" src=\"./public/images/logo-dark.png#gh-dark-mode-only\"/></p>\r <p align=\"center\"><img align=\"center\" width=\"280\" src=\"./public/images/logo-light.png#gh-light-mode-only\"/></p>\r <h3 align=\"center\">Get Live Weather Updates | Real-Time OpenWeather App</h3>\r <hr>",
   "main": "index.js",
   "scripts": {
+    "start": "node --env-file=.env server.js",
+    "dev": "node --env-file=.env server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

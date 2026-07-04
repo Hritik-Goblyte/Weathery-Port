@@ -1,0 +1,1312 @@
+/* ═══════════════════════════════════════════
+   APP SHELL — Sidebar + Main layout
+═══════════════════════════════════════════ */
+
+.app-shell {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: #0d1421;
+}
+
+/* ── Sidebar ──────────────────────────────── */
+.sidebar {
+  width: 100px;
+  min-width: 100px;
+  background: #080e17;
+  border-right: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 0 28px;
+  gap: 4px;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.sidebar-logo {
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  background: linear-gradient(135deg,#1d4ed8,#3b82f6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 20px rgba(59,130,246,0.45);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+.sidebar-logo:hover { transform: scale(1.06); }
+
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  align-items: center;
+}
+
+.sidebar-btn {
+  width: 82px;
+  padding: 11px 6px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  background: transparent;
+  color: rgba(255,255,255,0.28);
+  transition: background 0.2s, color 0.2s;
+  position: relative;
+  font-family: inherit;
+}
+
+.sidebar-btn:hover {
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.55);
+}
+
+.sidebar-btn--active {
+  background: rgba(59,130,246,0.14) !important;
+  color: #60a5fa !important;
+}
+
+.sidebar-btn-icon { font-size: 20px; line-height: 1; }
+.sidebar-btn-label { font-size: 10px; font-weight: 600; letter-spacing: 0.03em; }
+
+.sidebar-badge {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  background: #2563eb;
+  font-size: 9px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+/* ── Main area ────────────────────────────── */
+.main-area {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── Top bar ──────────────────────────────── */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 22px 0;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 50;
+}
+
+.topbar-search-wrap {
+  flex: 1;
+  position: relative;
+}
+
+.topbar-search-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #111b29;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 14px;
+  padding: 11px 16px;
+  transition: border-color 0.2s;
+}
+
+.topbar-search-form:focus-within {
+  border-color: rgba(59,130,246,0.5);
+}
+
+.topbar-search-icon { flex-shrink: 0; color: rgba(255,255,255,0.28); }
+
+.topbar-search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: rgba(255,255,255,0.85);
+  font-size: 1.4rem;
+  font-family: inherit;
+  display: block;
+  width: 100%;
+}
+
+.topbar-search-input::placeholder { color: rgba(255,255,255,0.3); }
+
+.topbar-search-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.2);
+  border-top-color: #60a5fa;
+  border-radius: 50%;
+  display: none;
+}
+
+.topbar-search-spinner.active {
+  display: block;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Search results dropdown */
+.topbar-search-results {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  background: #111b29;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+  display: none;
+  z-index: 100;
+}
+
+.topbar-search-results.active { display: block; }
+
+.topbar-search-results .view-list { padding: 8px 0; }
+
+.topbar-search-results .view-item {
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+  position: relative;
+}
+
+.topbar-search-results .view-item:hover { background: rgba(255,255,255,0.05); }
+
+.topbar-search-results .item-title {
+  color: rgba(255,255,255,0.82);
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+
+.topbar-search-results .item-subtitle {
+  color: rgba(255,255,255,0.35);
+  font-size: 1.1rem;
+}
+
+.topbar-search-results .view-item .item-link {
+  position: absolute;
+  inset: 0;
+}
+
+.topbar-location-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(37,99,235,0.15);
+  border: 1px solid rgba(37,99,235,0.35);
+  border-radius: 14px;
+  padding: 11px 16px;
+  color: #60a5fa;
+  font-size: 1.3rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+}
+
+.topbar-location-btn:hover {
+  background: rgba(37,99,235,0.25);
+  border-color: rgba(37,99,235,0.6);
+}
+
+.topbar-location-btn[disabled] {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.topbar-location-btn .m-icon { font-size: 1.8rem; }
+.topbar-location-text { display: none; }
+@media (min-width: 640px) { .topbar-location-text { display: block; } }
+
+/* ── Tab panels ───────────────────────────── */
+.tab-panel {
+  display: none;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.tab-panel--active { display: flex; flex-direction: column; }
+
+/* ── Weather tab layout ───────────────────── */
+.weather-layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: minmax(0,1fr);
+  gap: 20px;
+  padding: 18px 22px 22px;
+  overflow-y: auto;
+  min-height: 0;
+}
+
+@media (min-width: 900px) {
+  .weather-layout {
+    grid-template-columns: 280px minmax(0,1fr);
+  }
+  .weather-left { position: sticky; top: 0; align-self: flex-start; }
+}
+
+@media (min-width: 1200px) {
+  .weather-layout { grid-template-columns: 340px minmax(0,1fr); gap: 28px; padding: 22px 28px 28px; }
+}
+
+.weather-left, .weather-right { display: flex; flex-direction: column; gap: 16px; }
+
+/* ── Loading overlay ─────────────────────── */
+.loading {
+  position: absolute;
+  inset: 0;
+  background: rgba(13,20,33,0.92);
+  display: none;
+  place-items: center;
+  z-index: 20;
+  backdrop-filter: blur(4px);
+}
+
+.loading::after {
+  content: "";
+  width: 44px;
+  height: 44px;
+  border: 3px solid rgba(255,255,255,0.15);
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: block;
+}
+
+/* ── Cities tab ───────────────────────────── */
+.cities-panel {
+  flex: 1;
+  padding: 22px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+}
+
+.panel-section-label {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.25);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.cities-list { display: flex; flex-direction: column; gap: 10px; }
+
+.cities-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.cities-empty span { font-size: 52px; }
+.cities-empty p { color: rgba(255,255,255,0.55); font-size: 1.6rem; font-weight: 600; }
+.cities-empty small { color: rgba(255,255,255,0.22); font-size: 1.2rem; }
+
+.city-card {
+  background: #111c2b;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 18px;
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: background 0.18s, border-color 0.18s;
+}
+
+.city-card:hover {
+  background: #16243a;
+  border-color: rgba(255,255,255,0.12);
+}
+
+.city-card--active {
+  background: rgba(59,130,246,0.08) !important;
+  border-color: rgba(59,130,246,0.4) !important;
+}
+
+.city-card-icon { font-size: 36px; flex-shrink: 0; }
+
+.city-card-info { flex: 1; min-width: 0; }
+
+.city-card-name {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.city-card-active-badge {
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 99px;
+  background: rgba(59,130,246,0.2);
+  color: #60a5fa;
+  border: 1px solid rgba(59,130,246,0.3);
+}
+
+.city-card-desc {
+  font-size: 1.2rem;
+  color: rgba(255,255,255,0.32);
+  text-transform: capitalize;
+}
+
+.city-card-temp {
+  font-size: 2.8rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.9);
+  letter-spacing: -1px;
+  line-height: 1;
+  text-align: right;
+}
+
+.city-card-time {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.22);
+  text-align: right;
+  margin-top: 3px;
+}
+
+.city-card-remove {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255,255,255,0.05);
+  color: rgba(255,255,255,0.25);
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background 0.15s, color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.city-card-remove:hover {
+  background: rgba(239,68,68,0.18);
+  color: #f87171;
+}
+
+/* ── Settings tab ─────────────────────────── */
+.settings-panel {
+  flex: 1;
+  padding: 22px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 640px;
+}
+
+.settings-card {
+  background: #111c2b;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 20px;
+  padding: 22px 24px;
+}
+
+.settings-card--promo {
+  background: linear-gradient(135deg,#1e3a5f,#1d4ed8);
+  border: none;
+}
+
+.settings-card-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 16px;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.settings-row-label {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.8);
+  margin-bottom: 3px;
+}
+
+.settings-row-desc {
+  font-size: 1.2rem;
+  color: rgba(255,255,255,0.3);
+}
+
+/* Segment control */
+.seg-control {
+  display: flex;
+  gap: 2px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 12px;
+  padding: 3px;
+}
+
+.seg-btn {
+  padding: 7px 16px;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(255,255,255,0.4);
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.seg-btn--active {
+  background: #2563eb;
+  color: #fff;
+}
+
+.settings-about-list { display: flex; flex-direction: column; gap: 6px; }
+
+.settings-about-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 12px;
+}
+
+.settings-about-row span:first-child {
+  font-size: 1.3rem;
+  color: rgba(255,255,255,0.4);
+}
+
+.settings-about-row span:last-child {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.75);
+}
+
+/* ════════════════════════════════════════════
+   AI CHAT — Floating button + panel
+════════════════════════════════════════════ */
+
+#ai-chat-root { position: fixed; bottom: 28px; right: 28px; z-index: 200; }
+
+/* Rain drops */
+.ai-rain-drops {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 20px;
+  pointer-events: none;
+}
+
+.ai-rain-drop {
+  position: absolute;
+  width: 2px;
+  height: 8px;
+  background: rgba(96,165,250,0.5);
+  border-radius: 99px;
+  animation: ai-rain 1.2s ease-in infinite;
+}
+
+@keyframes ai-rain {
+  0% { transform: translateY(-8px); opacity: 0; }
+  30% { opacity: 1; }
+  100% { transform: translateY(20px); opacity: 0; }
+}
+
+/* FAB */
+.ai-fab-wrapper { position: relative; display: flex; flex-direction: column; align-items: center; }
+
+.ai-fab {
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  border: none;
+  background: linear-gradient(135deg,#1e3a5f,#2563eb);
+  box-shadow: 0 8px 32px rgba(37,99,235,0.55), 0 2px 8px rgba(0,0,0,0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  animation: ai-float 3s ease-in-out infinite;
+  transition: box-shadow 0.3s;
+  position: relative;
+}
+
+@keyframes ai-float {
+  0%,100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.ai-fab:hover { box-shadow: 0 12px 36px rgba(37,99,235,0.7), 0 2px 8px rgba(0,0,0,0.4); }
+
+.ai-fab-icon { display: block; line-height: 1; transition: font-size 0.2s; }
+
+.ai-fab-live {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  border: 2px solid #0d1421;
+  transition: background 0.3s;
+}
+
+.ai-fab-label {
+  text-align: center;
+  margin-top: 5px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.12em;
+  transition: opacity 0.2s;
+}
+
+/* Chat panel */
+.ai-chat-panel {
+  position: fixed;
+  bottom: 108px;
+  right: 28px;
+  width: 360px;
+  height: 490px;
+  background: #0e1825;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 24px;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.04);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 199;
+}
+
+.ai-chat-panel--open {
+  display: flex;
+  animation: ai-slide-up 0.28s cubic-bezier(0.34,1.56,0.64,1);
+}
+
+@keyframes ai-slide-up {
+  from { opacity: 0; transform: translateY(20px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Panel header */
+.ai-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #111e2e;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  flex-shrink: 0;
+}
+
+.ai-panel-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  background: linear-gradient(135deg,#1e3a5f,#2563eb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(37,99,235,0.35);
+}
+
+.ai-panel-title { font-size: 1.4rem; font-weight: 700; color: rgba(255,255,255,0.9); line-height: 1; }
+.ai-panel-subtitle { font-size: 1.1rem; color: rgba(255,255,255,0.35); margin-top: 3px; }
+
+.ai-panel-live-badge {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(74,222,128,0.1);
+  border: 1px solid rgba(74,222,128,0.2);
+  border-radius: 99px;
+  padding: 3px 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #4ade80;
+}
+
+.ai-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #4ade80;
+  display: block;
+}
+
+.ai-panel-close {
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,0.3);
+  cursor: pointer;
+  font-size: 1.4rem;
+  padding: 4px;
+  transition: color 0.2s;
+  margin-left: auto;
+}
+
+.ai-panel-close:hover { color: rgba(255,255,255,0.7); }
+
+/* Messages */
+.ai-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 14px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ai-messages::-webkit-scrollbar { width: 4px; }
+.ai-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+.ai-msg {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.ai-msg--user {
+  flex-direction: row-reverse;
+}
+
+.ai-msg-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: rgba(37,99,235,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.ai-msg-avatar--user {
+  background: rgba(255,255,255,0.07);
+}
+
+.ai-msg-bubble {
+  max-width: 78%;
+  padding: 9px 13px;
+  border-radius: 14px;
+  font-size: 1.3rem;
+  line-height: 1.55;
+}
+
+.ai-msg--bot .ai-msg-bubble {
+  background: rgba(37,99,235,0.12);
+  border: 1px solid rgba(37,99,235,0.25);
+  border-bottom-left-radius: 4px;
+  color: rgba(255,255,255,0.75);
+}
+
+.ai-msg--user .ai-msg-bubble {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.09);
+  border-bottom-right-radius: 4px;
+  color: rgba(255,255,255,0.85);
+}
+
+/* Typing indicator */
+.ai-typing {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  padding: 12px 14px !important;
+}
+
+.ai-typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #3b82f6;
+  display: block;
+  animation: ai-bounce 1s ease-in-out infinite;
+}
+.ai-typing span:nth-child(2) { animation-delay: 0.15s; }
+.ai-typing span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes ai-bounce {
+  0%,100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* Suggestions chips */
+.ai-suggestions {
+  padding: 6px 14px 8px;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+
+.ai-suggestions::-webkit-scrollbar { display: none; }
+
+.ai-suggestion-chip {
+  flex-shrink: 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  background: rgba(37,99,235,0.12);
+  border: 1px solid rgba(37,99,235,0.3);
+  color: #60a5fa;
+  white-space: nowrap;
+  transition: background 0.18s, border-color 0.18s;
+  font-family: inherit;
+}
+
+.ai-suggestion-chip:hover {
+  background: rgba(37,99,235,0.25);
+  border-color: rgba(37,99,235,0.5);
+}
+
+/* Input row */
+.ai-input-row {
+  padding: 10px 14px 14px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  background: rgba(255,255,255,0.02);
+}
+
+.ai-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: rgba(255,255,255,0.85);
+  font-size: 1.3rem;
+  font-family: inherit;
+  display: block;
+}
+
+.ai-input::placeholder { color: rgba(255,255,255,0.25); }
+
+.ai-send-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.06);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.3);
+  transition: background 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+
+.ai-send-btn:not(:disabled):hover {
+  background: #2563eb;
+  color: #fff;
+}
+
+.ai-send-btn.ready {
+  background: #2563eb;
+  color: #fff;
+}
+
+/* ── Footer (inside weather tab) ─────────── */
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 8px 20px;
+  color: rgba(255,255,255,0.25);
+  font-size: 1.2rem;
+  text-align: center;
+  padding: 16px 0 4px;
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.footer a { display: inline-flex; align-items: center; }
+
+/* ── Toast notifications ─────────────────── */
+#toast-container {
+  position: fixed;
+  bottom: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  pointer-events: none;
+}
+
+.toast {
+  padding: 10px 20px;
+  border-radius: 99px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #fff;
+  background: #1e2d42;
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.25s, transform 0.25s;
+  white-space: nowrap;
+}
+
+.toast--show { opacity: 1; transform: translateY(0); }
+.toast--success { background: rgba(22,163,74,0.9); border-color: rgba(74,222,128,0.3); }
+.toast--error   { background: rgba(185,28,28,0.9);  border-color: rgba(248,113,113,0.3); }
+
+/* ── Share button ────────────────────────── */
+.current-weather-toprow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.share-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 99px;
+  padding: 5px 12px;
+  color: rgba(255,255,255,0.5);
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  font-family: inherit;
+}
+
+.share-btn:hover {
+  background: rgba(37,99,235,0.2);
+  border-color: rgba(37,99,235,0.4);
+  color: #60a5fa;
+}
+
+/* ── AI markdown list ────────────────────── */
+.ai-msg-bubble .ai-list {
+  margin: 6px 0 2px 4px;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ai-msg-bubble .ai-list li::before {
+  content: "•";
+  color: #60a5fa;
+  margin-right: 6px;
+}
+
+.ai-msg-bubble strong {
+  color: rgba(255,255,255,0.95);
+  font-weight: 700;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   ANIMATIONS & PARTICLES
+═══════════════════════════════════════════════════════════ */
+
+/* ── Weather particle canvas ─────────────── */
+#weather-canvas {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 1.5s ease;
+}
+#weather-canvas.active { opacity: 1; }
+
+/* ── Card entrance animations ────────────── */
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.93); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes slide-right {
+  from { opacity: 0; transform: translateX(-18px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes number-pop {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* Apply to weather sections when loaded */
+[data-current-weather] .card  { animation: card-in 0.5s cubic-bezier(0.22,1,0.36,1) both; }
+[data-highlights] .card-lg    { animation: card-in 0.55s 0.08s cubic-bezier(0.22,1,0.36,1) both; }
+[data-highlights] .highlight-card:nth-child(1) { animation: fade-up 0.4s 0.1s both; }
+[data-highlights] .highlight-card:nth-child(2) { animation: fade-up 0.4s 0.18s both; }
+[data-highlights] .highlight-card:nth-child(3) { animation: fade-up 0.4s 0.24s both; }
+[data-highlights] .highlight-card:nth-child(4) { animation: fade-up 0.4s 0.30s both; }
+[data-highlights] .highlight-card:nth-child(5) { animation: fade-up 0.4s 0.36s both; }
+[data-highlights] .highlight-card:nth-child(6) { animation: fade-up 0.4s 0.42s both; }
+[data-highlights] .highlight-card:nth-child(7) { animation: fade-up 0.4s 0.48s both; }
+[data-5-day-forecast] .card-lg { animation: card-in 0.5s 0.12s cubic-bezier(0.22,1,0.36,1) both; }
+[data-hourly-forecast] .card-lg,
+[data-hourly-forecast] .card   { animation: card-in 0.5s 0.06s cubic-bezier(0.22,1,0.36,1) both; }
+
+/* Slider items stagger */
+.slider-item { animation: fade-up 0.35s both; }
+.slider-item:nth-child(1) { animation-delay: 0.05s; }
+.slider-item:nth-child(2) { animation-delay: 0.10s; }
+.slider-item:nth-child(3) { animation-delay: 0.15s; }
+.slider-item:nth-child(4) { animation-delay: 0.20s; }
+.slider-item:nth-child(5) { animation-delay: 0.25s; }
+.slider-item:nth-child(6) { animation-delay: 0.30s; }
+.slider-item:nth-child(7) { animation-delay: 0.35s; }
+.slider-item:nth-child(8) { animation-delay: 0.40s; }
+
+/* Forecast card items stagger */
+[data-forecast-list] .card-item { animation: slide-right 0.35s both; }
+[data-forecast-list] .card-item:nth-child(1) { animation-delay: 0.05s; }
+[data-forecast-list] .card-item:nth-child(2) { animation-delay: 0.12s; }
+[data-forecast-list] .card-item:nth-child(3) { animation-delay: 0.19s; }
+[data-forecast-list] .card-item:nth-child(4) { animation-delay: 0.26s; }
+[data-forecast-list] .card-item:nth-child(5) { animation-delay: 0.33s; }
+
+/* Heading temp number pop on load */
+.current-weather-card .heading {
+  animation: number-pop 0.6s 0.4s cubic-bezier(0.22,1,0.36,1) both;
+  display: inline-block;
+}
+
+/* Weather icon spin-in */
+.current-weather-card .weather-icon {
+  animation: scale-in 0.5s 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+/* ── Skeleton loading shimmer ────────────── */
+@keyframes shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg,
+    rgba(255,255,255,0.04) 0%,
+    rgba(255,255,255,0.09) 50%,
+    rgba(255,255,255,0.04) 100%
+  );
+  background-size: 800px 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 10px;
+}
+
+/* ── Highlight card hover lift ───────────── */
+.highlight-card {
+  transition: transform 0.22s cubic-bezier(0.22,1,0.36,1),
+              box-shadow 0.22s ease,
+              border-color 0.22s ease;
+  cursor: default;
+}
+
+.highlight-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(0,0,0,0.35);
+  border-color: rgba(255,255,255,0.12) !important;
+}
+
+/* ── Sidebar button hover glow ───────────── */
+.sidebar-btn {
+  transition: background 0.2s, color 0.2s, transform 0.15s;
+}
+.sidebar-btn:hover { transform: scale(1.05); }
+.sidebar-btn--active { animation: scale-in 0.2s ease; }
+
+/* ── Topbar search focus glow ────────────── */
+.topbar-search-form {
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.topbar-search-form:focus-within {
+  border-color: rgba(59,130,246,0.5);
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.12);
+}
+
+/* ── City card animated hover ────────────── */
+.city-card {
+  transition: background 0.18s, border-color 0.18s,
+              transform 0.2s cubic-bezier(0.22,1,0.36,1),
+              box-shadow 0.2s ease;
+}
+.city-card:hover {
+  transform: translateY(-2px) scale(1.005);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.3);
+}
+
+/* ── Loading bar at top ──────────────────── */
+#top-progress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, #2563eb, #60a5fa, #a78bfa);
+  z-index: 1000;
+  transition: width 0.3s ease;
+  border-radius: 0 3px 3px 0;
+  box-shadow: 0 0 10px rgba(96,165,250,0.7);
+}
+
+/* ── Weather icon bounce on card ─────────── */
+@keyframes icon-hover-bounce {
+  0%,100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-4px) scale(1.05); }
+}
+.current-weather-card .weather-icon:hover {
+  animation: icon-hover-bounce 0.6s ease-in-out;
+  cursor: pointer;
+}
+
+/* ── Pulsing live dot on AI badge ────────── */
+@keyframes pulse-dot {
+  0%,100% { box-shadow: 0 0 0 0 rgba(74,222,128,0.5); }
+  50%     { box-shadow: 0 0 0 5px rgba(74,222,128,0); }
+}
+.ai-live-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+.ai-fab-live {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* ── AI chat panel slide animation tweak ─── */
+@keyframes ai-slide-up {
+  from { opacity: 0; transform: translateY(28px) scale(0.94); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ── AI message bubble entrance ─────────── */
+.ai-msg { animation: fade-up 0.25s cubic-bezier(0.22,1,0.36,1) both; }
+
+/* ── Chip hover bounce ───────────────────── */
+.ai-suggestion-chip {
+  transition: background 0.18s, border-color 0.18s, transform 0.15s;
+}
+.ai-suggestion-chip:hover { transform: translateY(-2px); }
+
+/* ── Share button bounce ─────────────────── */
+.share-btn { transition: background 0.2s, color 0.2s, transform 0.15s; }
+.share-btn:active { transform: scale(0.93); }
+
+/* ── Forecast card item hover ────────────── */
+[data-forecast-list] .card-item {
+  transition: background 0.18s, padding-left 0.18s;
+  border-radius: 10px;
+  padding: 4px 8px;
+}
+[data-forecast-list] .card-item:hover {
+  background: rgba(255,255,255,0.04);
+  padding-left: 12px;
+}
+
+/* ── Sidebar logo pulse on hover ─────────── */
+@keyframes logo-pulse {
+  0%,100% { box-shadow: 0 4px 20px rgba(59,130,246,0.45); }
+  50%     { box-shadow: 0 4px 32px rgba(59,130,246,0.8); }
+}
+.sidebar-logo:hover { animation: logo-pulse 1s ease-in-out infinite; }
+
+/* ── Badge pop animation ─────────────────── */
+@keyframes badge-pop {
+  0%   { transform: scale(0); }
+  70%  { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+.sidebar-badge { animation: badge-pop 0.3s cubic-bezier(0.34,1.56,0.64,1) both; }
+
+/* ── Reduce motion for accessibility ─────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   GLASSMORPHISM — Transparent surfaces
+═══════════════════════════════════════════════════════════ */
+
+/* Base glass mixin applied everywhere */
+.card,
+.card-lg,
+.card-sm,
+.highlight-card,
+.current-weather-card,
+.forecast-card,
+.slider-card,
+.ai-chat-panel,
+.ai-panel-header,
+.topbar-search-form,
+.topbar-search-results,
+.city-card,
+.settings-card,
+.sidebar,
+[data-highlights] .card-lg,
+[data-hourly-forecast] .card,
+[data-5-day-forecast] .card-lg {
+  background: rgba(13, 24, 40, 0.55) !important;
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Sidebar slightly more opaque so nav stays readable */
+.sidebar {
+  background: rgba(6, 10, 20, 0.7) !important;
+  border-right-color: rgba(255,255,255,0.07) !important;
+}
+
+/* Topbar search */
+.topbar-search-form {
+  background: rgba(10, 18, 32, 0.6) !important;
+}
+
+.topbar-search-results {
+  background: rgba(10, 18, 32, 0.82) !important;
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* AI chat panel */
+.ai-chat-panel {
+  background: rgba(8, 16, 30, 0.72) !important;
+}
+
+.ai-panel-header {
+  background: rgba(8, 16, 30, 0.6) !important;
+}
+
+/* Active city card highlight stays distinguishable */
+.city-card--active {
+  background: rgba(37, 99, 235, 0.18) !important;
+}
+
+/* Settings promo card keep its gradient */
+.settings-card--promo {
+  background: linear-gradient(135deg, rgba(30,58,95,0.85), rgba(29,78,216,0.85)) !important;
+}
+
+/* Main area background transparent so canvas bleeds through */
+.main-area {
+  background: transparent;
+}
+
+/* App shell base — canvas needs to be visible */
+.app-shell {
+  background: #0d1421;
+}
+
+/* Highlight cards inner bg */
+.highlights .card-sm {
+  background: rgba(255,255,255,0.03) !important;
+}
+
+/* Search result items */
+.topbar-search-results .view-item:hover {
+  background: rgba(255,255,255,0.06) !important;
+}
+
+/* Slider cards */
+.slider-card {
+  background: rgba(255,255,255,0.04) !important;
+}
+
+/* Forecast card inner */
+.forecast-card {
+  background: rgba(13,24,40,0.4) !important;
+}
+
+/* Loading overlay */
+.loading {
+  background: rgba(8, 16, 26, 0.85) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* AI input row */
+.ai-input-row {
+  background: rgba(255,255,255,0.03) !important;
+  border-top-color: rgba(255,255,255,0.07) !important;
+}
+
+/* Toast */
+.toast {
+  background: rgba(20, 34, 54, 0.9) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}

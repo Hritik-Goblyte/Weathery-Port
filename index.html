@@ -5,136 +5,184 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!------------------------------------- Primary Meta Tags ------------------------------------->
     <title>WeatheryPort</title>
-    <meta name="title" content="sky-now" />
-    <meta name="description" content="about current weather around globe" />
+    <meta name="title" content="WeatheryPort" />
+    <meta name="description" content="Real-time weather with AI assistant" />
 
-    <!----------------------------------------- Web_Icon ------------------------------------------>
     <link rel="shortcut icon" href="./public/images/web_icon.svg" type="image/svg+xml" />
-
-    <!------------------------------------- Google Font Links ------------------------------------->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
 
-    <!----------------------------------------- Custom_CSS ---------------------------------------->
     <link rel="stylesheet" href="./public/styles/main.css" />
+    <link rel="stylesheet" href="./public/styles/app.css" />
 
-    <!----------------------------------------- Custom_JS ----------------------------------------->
     <script src="./js/app.js" type="module"></script>
     <script src="./js/route.js" type="module"></script>
-    <script src="./js/ai-chat.js" type="module"></script>
   </head>
 
   <body>
 
-    <!-- custom cursor -->
+    <!-- Custom cursor -->
     <div class="cursor-dot" data-cursor-dot></div>
     <div class="cursor-outline" data-cursor-outline></div>
 
-    <!------------------------------------------- HEADER ------------------------------------------>
-    <header class="header">
-      <div class="container">
-        <a href="#" class="logo"><img src="./public/images/logo-dark.png" width="360" height="50" alt="logo" />
-        </a>
+    <!-- Top progress bar -->
+    <div id="top-progress"></div>
 
-        <div class="search-view" data-search-view>
-          <div class="search-wrapper">
-            <input type="search" name="search" placeholder="Search City ..." autocomplete="off" class="search-field"
-              data-search-field />
-            <span class="m-icon leading-icon">search</span>
-            <button class="icon-btn leading-icon has-state" aria-label="close search" data-search-toggler>
-              <span class="m-icon">arrow_back</span>
-            </button>
-          </div>
-          <div class="search-result" data-search-result></div>
+    <!-- Weather particle canvas -->
+    <canvas id="weather-canvas"></canvas>
+
+    <!-- ════════════════════════ APP SHELL ════════════════════════ -->
+    <div class="app-shell">
+
+      <!-- ── Sidebar ── -->
+      <aside class="sidebar" id="sidebar">
+        <!-- Logo -->
+        <div class="sidebar-logo">
+          <span>⛅</span>
         </div>
 
-        <div class="header-actions">
-          <button class="icon-btn has-state" aria-label="open search" data-search-toggler>
-            <span class="m-icon">search</span>
+        <!-- Nav -->
+        <nav class="sidebar-nav">
+          <button class="sidebar-btn sidebar-btn--active" data-tab="weather" aria-label="Weather">
+            <span class="sidebar-btn-icon">🌤</span>
+            <span class="sidebar-btn-label">Weather</span>
           </button>
-          <a href="#/current-location" class="btn-primary has-state" data-current-location-btn>
+          <button class="sidebar-btn" data-tab="cities" aria-label="Saved Cities">
+            <span class="sidebar-btn-icon">🏙</span>
+            <span class="sidebar-btn-label">Cities</span>
+            <span class="sidebar-badge" id="cities-badge" style="display:none">0</span>
+          </button>
+          <button class="sidebar-btn" data-tab="settings" aria-label="Settings">
+            <span class="sidebar-btn-icon">⚙</span>
+            <span class="sidebar-btn-label">Settings</span>
+          </button>
+        </nav>
+      </aside>
+
+      <!-- ── Main area ── -->
+      <div class="main-area">
+
+        <!-- ── Top bar: search + location ── -->
+        <header class="topbar">
+          <div class="topbar-search-wrap" data-search-wrap>
+            <form class="topbar-search-form" data-search-form>
+              <svg class="topbar-search-icon" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+              </svg>
+              <input
+                type="search"
+                class="topbar-search-input"
+                data-search-field
+                placeholder="Search for cities…"
+                autocomplete="off"
+                aria-label="Search city"
+              />
+              <span class="topbar-search-spinner" data-search-spinner></span>
+            </form>
+
+            <!-- Search results dropdown -->
+            <div class="topbar-search-results" data-search-result></div>
+          </div>
+
+          <a href="#/current-location" class="topbar-location-btn has-state" data-current-location-btn aria-label="Use current location">
             <span class="m-icon">my_location</span>
-            <span class="span">Current Location</span>
+            <span class="topbar-location-text">Current Location</span>
           </a>
+        </header>
+
+        <!-- ══ TAB: WEATHER ══ -->
+        <div class="tab-panel tab-panel--active" data-tab-panel="weather">
+          <div class="weather-layout">
+
+            <!-- Left column -->
+            <div class="weather-left">
+              <section class="section current-weather" aria-label="current weather" data-current-weather></section>
+              <section class="section forecast" aria-labelledby="forecast-label" data-5-day-forecast></section>
+            </div>
+
+            <!-- Right column -->
+            <div class="weather-right">
+              <section class="section highlights" aria-labelledby="highlights-label" data-highlights></section>
+              <section class="section hourly-forecast" aria-label="hourly forecast" data-hourly-forecast></section>
+
+              <footer class="footer">
+                <p class="body-3">Copyright 2025 Hritik Roshan. All Rights Reserved.</p>
+                <p class="body-3">
+                  Powered By
+                  <a href="https://openweathermap.org/api" target="_blank" rel="noopener">
+                    <img src="./public/images/openweather.png" width="120" height="24" loading="lazy" alt="OpenWeather" />
+                  </a>
+                </p>
+              </footer>
+            </div>
+
+          </div>
         </div>
-      </div>
-    </header>
 
-    <!-------------------------------------------- MAIN ------------------------------------------->
-    <main>
-      <article class="container" data-container>
-        <!-- Left Section -->
-        <div class="content-left">
-          <!--------------------------------- CURRENT-WEATHER ------------------------------------->
-          <section class="section current-weather" aria-label="current weather" data-current-weather></section>
-
-          <!------------------------------------ FORECAST ----------------------------------------->
-          <section class="section forecast" aria-labelledby="forecast-label" data-5-day-forecast></section>
+        <!-- ══ TAB: CITIES ══ -->
+        <div class="tab-panel" data-tab-panel="cities">
+          <div class="cities-panel">
+            <p class="panel-section-label">Saved Cities</p>
+            <div class="cities-list" id="cities-list">
+              <div class="cities-empty">
+                <span>🏙️</span>
+                <p>No saved cities yet</p>
+                <small>Cities are saved automatically when you search for them</small>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- Right Section -->
-        <div class="content-right">
-          <!----------------------------------- HIGHLIGHTS ---------------------------------------->
-          <section class="section highlights" aria-labelledby="highlights-label" data-highlights></section>
+        <!-- ══ TAB: SETTINGS ══ -->
+        <div class="tab-panel" data-tab-panel="settings">
+          <div class="settings-panel">
 
-          <!--------------------------------- HOURLY-FORECAST ------------------------------------->
-          <section class="section hourly-forecast" aria-label="hourly-forecast" data-hourly-forecast></section>
-
-          <!----------------------------------- AI WEATHER CHAT ---------------------------------->
-          <section class="section ai-chat" aria-label="AI Weather Assistant">
-            <div class="card card-lg ai-chat-card">
-              <h2 class="title-2">🤖 AI Weather Assistant</h2>
-              <p class="body-3">Ask me anything about the current weather conditions!</p>
-              
-              <div class="chat-container" data-chat-container>
-                <div class="chat-messages" data-chat-messages>
-                  <div class="chat-message ai-message">
-                    <div class="message-content">
-                      <span class="message-icon">🤖</span>
-                      <p>Hi! I can help you understand the weather data. Ask me questions like "Should I carry an umbrella?" or "Is it good weather for outdoor activities?"</p>
-                    </div>
-                  </div>
+            <!-- Temperature unit -->
+            <div class="settings-card">
+              <p class="settings-card-title">Units</p>
+              <div class="settings-row">
+                <div>
+                  <p class="settings-row-label">Temperature</p>
+                  <p class="settings-row-desc">Switch between Celsius and Fahrenheit</p>
                 </div>
-                
-                <div class="chat-input-container">
-                  <div class="chat-input-wrapper">
-                    <input type="text" class="chat-input" placeholder="Ask about the weather..." data-chat-input maxlength="200">
-                    <button class="chat-send-btn" data-chat-send aria-label="Send message">
-                      <span class="m-icon">send</span>
-                    </button>
-                  </div>
-                  <div class="quick-questions">
-                    <button class="quick-btn" data-quick-question="Should I carry an umbrella today?">🌂 Umbrella needed?</button>
-                    <button class="quick-btn" data-quick-question="Is it good weather for outdoor activities?">🏃 Good for outdoors?</button>
-                    <button class="quick-btn" data-quick-question="What should I wear today?">👕 What to wear?</button>
-                  </div>
+                <div class="seg-control" id="unit-control">
+                  <button class="seg-btn seg-btn--active" data-unit="metric">°C Celsius</button>
+                  <button class="seg-btn" data-unit="imperial">°F Fahrenheit</button>
                 </div>
               </div>
             </div>
-          </section>
 
-          <!------------------------------------- FOOTER ------------------------------------------>
-          <footer class="footer">
-            <p class="body-3">
-              Copyright 2025 Hritik Roshan. All Rights Reserved.
-            </p>
-            <p class="body-3">
-              Powered By
-              <a href="https://openweathermap.org/api" title="Free OpenWeather API" target="_blank" rel="noopener"><img
-                  src="./public/images/openweather.png" width="150" height="30" loading="lazy" alt="OpenWeather" /></a>
-            </p>
-          </footer>
+            <!-- About -->
+            <div class="settings-card">
+              <p class="settings-card-title">About</p>
+              <div class="settings-about-list">
+                <div class="settings-about-row"><span>App</span><span>WeatheryPort</span></div>
+                <div class="settings-about-row"><span>Version</span><span>2.0.0</span></div>
+                <div class="settings-about-row"><span>Weather API</span><span>OpenWeatherMap</span></div>
+                <div class="settings-about-row"><span>AI Model</span><span>Gemini 1.5 Flash</span></div>
+              </div>
+            </div>
+
+            <!-- AI chat promo -->
+            <div class="settings-card settings-card--promo">
+              <p style="font-size:1.6rem;font-weight:800;color:#fff;margin-bottom:6px">Never forget your umbrella! ☂️</p>
+              <p style="font-size:1.3rem;color:rgba(255,255,255,0.6);line-height:1.6">
+                Ask the AI assistant for daily weather advice, clothing tips, and activity recommendations.
+              </p>
+            </div>
+
+          </div>
         </div>
 
-        <!--------------------------------------- LOADING ----------------------------------------->
+        <!-- Loading overlay -->
         <div class="loading" data-loading></div>
-      </article>
-    </main>
 
-    <!-------------------------------------- 404 ERROR SECTION ------------------------------------>
+      </div>
+    </div>
+
+    <!-- 404 error -->
     <section class="error-content" data-error-content>
       <h2 class="heading mobile-error">404</h2>
       <p class="body-1">Page not found!</p>
@@ -142,6 +190,6 @@
         <span class="span">Go Home</span>
       </a>
     </section>
-  </body>
 
+  </body>
 </html>
