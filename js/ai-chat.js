@@ -1,5 +1,9 @@
 "use strict";
 
+// Use Netlify Functions in production, local server in dev
+const isLocal   = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+const CHAT_ENDPOINT = isLocal ? "/api/chat" : "/.netlify/functions/chat";
+
 let currentWeatherData = null;
 let currentLocationName = null;
 let currentAQI = null;
@@ -285,7 +289,7 @@ async function sendMessage() {
   const typingId = showTyping();
 
   try {
-    const res = await fetch("/api/chat", {
+    const res = await fetch(CHAT_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -304,7 +308,7 @@ async function sendMessage() {
 
   } catch (err) {
     hideTyping(typingId);
-    appendMessage("bot", "❌ Couldn't connect to the server. Make sure you ran `npm start` in the Weathery-Port folder.");
+    appendMessage("bot", "❌ AI service unavailable. Please try again in a moment.");
   } finally {
     sendBtn.disabled = false;
     input.focus();

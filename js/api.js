@@ -1,9 +1,16 @@
 "use strict";
 
 /**
- * All OpenWeather calls go through our Express server proxy.
- * The API key never touches the browser.
+ * All OpenWeather calls go through Netlify Functions (production)
+ * or the local Express server (npm start).
+ * API key never touches the browser.
  */
+
+// Detect environment — Netlify functions path vs local server path
+const isNetlify = !window.location.hostname.includes("localhost");
+const WEATHER_BASE = isNetlify ? "/.netlify/functions/weather" : "/api/weather";
+const GEO_BASE     = isNetlify ? "/.netlify/functions/geo"     : "/api/geo";
+
 export const fetchData = async function (URL, callback) {
   try {
     const response = await fetch(URL);
@@ -27,18 +34,18 @@ export const fetchData = async function (URL, callback) {
 
 export const url = {
   currentWeather(lat, lon) {
-    return `/api/weather/weather?lat=${lat}&lon=${lon}&units=metric`;
+    return `${WEATHER_BASE}/weather?lat=${lat}&lon=${lon}&units=metric`;
   },
   forecast(lat, lon) {
-    return `/api/weather/forecast?lat=${lat}&lon=${lon}&units=metric`;
+    return `${WEATHER_BASE}/forecast?lat=${lat}&lon=${lon}&units=metric`;
   },
   airPollution(lat, lon) {
-    return `/api/weather/air_pollution?lat=${lat}&lon=${lon}`;
+    return `${WEATHER_BASE}/air_pollution?lat=${lat}&lon=${lon}`;
   },
   reverseGeo(lat, lon) {
-    return `/api/geo/reverse?lat=${lat}&lon=${lon}&limit=5`;
+    return `${GEO_BASE}/reverse?lat=${lat}&lon=${lon}&limit=5`;
   },
   geo(query) {
-    return `/api/geo/direct?q=${encodeURIComponent(query)}&limit=5`;
+    return `${GEO_BASE}/direct?q=${encodeURIComponent(query)}&limit=5`;
   },
 };
