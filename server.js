@@ -10,13 +10,48 @@ const fetchFn = globalThis.fetch;
 const app  = express();
 const PORT = process.env.PORT || 3000;
 
-// ── Gemini API key ───────────────────────────────────────────────────────────
-// Set GEMINI_API_KEY in your environment or replace the string below
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || "YOUR_GEMINI_API_KEY_HERE";
+const GEMINI_API_KEY   = process.env.GEMINI_API_KEY   || "";
+const OW_API_KEY       = process.env.OPENWEATHER_API_KEY || "";
+const OW_BASE          = "https://api.openweathermap.org";
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
+
+// ── Weather proxy routes (keeps OW key server-side) ─────────────────────────
+app.get("/api/weather/:endpoint", async (req, res) => {
+  const { endpoint } = req.params;
+  const allowed = ["weather", "forecast", "air_pollution"];
+  if (!allowed.includes(endpoint)) return res.status(400).json({ error: "Invalid endpoint" });
+
+  const params = new URLSearchParams({ ...req.query, appid: OW_API_KEY });
+  const apiUrl = `${OW_BASE}/data/2.5/${endpoint}?${params}`;
+
+  try {
+    const r    = await fetchFn(apiUrl);
+    const data = await r.json();
+    res.status(r.status).json(data);
+  } catch (err) {
+    res.status(500).json({ error: "Weather API failed: " + err.message });
+  }
+});
+
+app.get("/api/geo/:endpoint", async (req, res) => {
+  const { endpoint } = req.params;
+  const allowed = ["direct", "reverse"];
+  if (!allowed.includes(endpoint)) return res.status(400).json({ error: "Invalid endpoint" });
+
+  const params = new URLSearchParams({ ...req.query, appid: OW_API_KEY });
+  const apiUrl = `${OW_BASE}/geo/1.0/${endpoint}?${params}`;
+
+  try {
+    const r    = await fetchFn(apiUrl);
+    const data = await r.json();
+    res.status(r.status).json(data);
+  } catch (err) {
+    res.status(500).json({ error: "Geo API failed: " + err.message });
+  }
+});
 
 // ── POST /api/chat ───────────────────────────────────────────────────────────
 app.post("/api/chat", async (req, res) => {

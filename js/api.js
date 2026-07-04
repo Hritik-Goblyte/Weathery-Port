@@ -1,28 +1,23 @@
-
 "use strict";
 
-import { config } from "./config.js";
-
 /**
- * Fetch Data From Server with improved error handling
- * @param { string } URL API url
- * @param { Function } callback callback
+ * All OpenWeather calls go through our Express server proxy.
+ * The API key never touches the browser.
  */
 export const fetchData = async function (URL, callback) {
   try {
-    const response = await fetch(`${URL}&appid=${config.API_KEY}`);
-    
+    const response = await fetch(URL);
+
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      throw new Error(`HTTP ${response.status}`);
     }
-    
+
     const data = await response.json();
-    
-    // Check if the API returned an error
+
     if (data.cod && data.cod !== 200 && data.cod !== "200") {
       throw new Error(data.message || "API Error");
     }
-    
+
     callback(data);
   } catch (error) {
     console.error("API Error:", error);
@@ -30,25 +25,20 @@ export const fetchData = async function (URL, callback) {
   }
 };
 
-
 export const url = {
   currentWeather(lat, lon) {
-    return `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric`;
+    return `/api/weather/weather?lat=${lat}&lon=${lon}&units=metric`;
   },
   forecast(lat, lon) {
-    return `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric`;
+    return `/api/weather/forecast?lat=${lat}&lon=${lon}&units=metric`;
   },
   airPollution(lat, lon) {
-    return `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}`;
+    return `/api/weather/air_pollution?lat=${lat}&lon=${lon}`;
   },
   reverseGeo(lat, lon) {
-    return `https://api.openweathermap.org/geo/1.0/reverse?lat=${lat}&lon=${lon}&limit=5`;
+    return `/api/geo/reverse?lat=${lat}&lon=${lon}&limit=5`;
   },
-
-  /**
-   * @param {string} query Search Query For ex :- "New Delhi", "Thailand"
-   */
   geo(query) {
-    return `https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5`;
+    return `/api/geo/direct?q=${encodeURIComponent(query)}&limit=5`;
   },
 };
